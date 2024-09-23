@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package shopping;
+
+service ShoppingService {
+    // Admin operations
+    rpc AddProduct(Product) returns (ProductCode) {}          // Adds a new product
+    rpc UpdateProduct(Product) returns (Product) {}           // Updates an existing product
+    rpc RemoveProduct(ProductCode) returns (ProductList) {}   // Removes a product and returns the updated list
+    rpc ListAvailableProducts(Empty) returns (ProductList) {} // Lists all available products
+    rpc SearchProduct(ProductCode) returns (Product) {}       // Searches for a product by its code
+    rpc AddToCart(CartItem) returns (CartResponse) {}         // Adds a product to the user's cart
+    rpc PlaceOrder(UserId) returns (OrderResponse) {}         // Places an order for the user
+
+    // Admin & user operations
+    rpc CreateUsers(stream User) returns (UsersCreatedResponse) {} // Streams user data and adds it to the database
+}
+
+message Empty {}
+
+message Product {
+    string sku = 1;
+    string name = 2;
+    string description = 3;
+    double price = 4;
+    string status = 5;
+}
+
+message ProductCode {
+    string code = 1;           
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+    bool isAdmin = 3;
+}
+
+
+
+message UsersCreatedResponse {
+    int32 count = 1;            // Number of users created
+}
+
+message ProductList {
+    repeated Product products = 1;  // List of all products
+}
+
+message CartItem {
+    string userId = 1;          // User ID who adds to cart
+    string sku = 2;             // SKU of the product to add to cart
+}
+
+message CartResponse {
+    bool success = 1;           // Whether the operation was successful
+    string message = 2;         // Message regarding the operation result
+}
+
+message UserId {
+    string id = 1;              // User ID
+}
+
+message OrderResponse {
+    bool success = 1;           // Whether the order was placed successfully
+    string orderId = 2;         // Generated Order ID
+    string message = 3;         // Message regarding the order result
+}
